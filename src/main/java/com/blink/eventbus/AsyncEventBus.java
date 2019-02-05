@@ -4,6 +4,6 @@ import java.util.concurrent.Executor;
 
 public class AsyncEventBus extends EventBus {
     AsyncEventBus(String identifier, Executor executor, SubscriberExceptionHandler exceptionHandler) {
-        super(identifier, executor, exceptionHandler, dispatcher);
+        super(identifier, executor, exceptionHandler, null);
     }
 }

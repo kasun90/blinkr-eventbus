@@ -37,15 +37,24 @@ public class EventBus {
         return identifier;
     }
 
+    public Executor getExecutor() {
+        return executor;
+    }
+
+    void handleSubscriberException(Throwable e, SubscriberExceptionContext context) {
+        try {
+            exceptionHandler.handle(e, context);
+        } catch (Throwable e2) {
+            logger.log(
+                    Level.SEVERE,
+                    String.format("Exception %s thrown while handling exception: %s", e2, e),
+                    e2);
+        }
+    }
+
     static final class ExceptionLogger implements SubscriberExceptionHandler {
 
         static final ExceptionLogger INSTANCE = new ExceptionLogger();
-
-        public void handle(Throwable t, SubscriberExceptionContext context) {
-            Logger logger = logger(context);
-            if (logger.isLoggable(Level.SEVERE))
-                logger.log(Level.SEVERE, message(context));
-        }
 
         private static Logger logger(SubscriberExceptionContext context) {
             return Logger.getLogger(EventBus.class.getName() + "." + context.getEventBus().getIdentifier());
@@ -62,6 +71,12 @@ public class EventBus {
                     + context.getSubscriber()
                     + " when dispatching event: "
                     + context.getEvent();
+        }
+
+        public void handle(Throwable t, SubscriberExceptionContext context) {
+            Logger logger = logger(context);
+            if (logger.isLoggable(Level.SEVERE))
+                logger.log(Level.SEVERE, message(context));
         }
     }
 }
