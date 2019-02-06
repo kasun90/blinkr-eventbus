@@ -68,7 +68,14 @@ class SubscriberRegistry {
     }
 
     Iterator<Subscriber> getAllSubscribers(Object event) {
-        return subscribers.get(event.getClass()).iterator();
+        CopyOnWriteArraySet<Subscriber> eventSubscribers = this.subscribers.get(event.getClass());
+        if (eventSubscribers != null) {
+            ArrayList<Subscriber> subscribers = new ArrayList<>(eventSubscribers.size());
+            subscribers.addAll(eventSubscribers);
+            return subscribers.iterator();
+        } else {
+            return Collections.emptyIterator();
+        }
     }
 
 }

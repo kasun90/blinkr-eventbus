@@ -29,4 +29,13 @@ public class EventBusTest {
         asyncBus.post(new EventTest.TestEventConcurrent());
         System.out.println("Posted on thread: " + Thread.currentThread().getName());
     }
+
+    @Test
+    public void asyncEventTest2() {
+        EventBus bus = new AsyncEventBus(Executors.newCachedThreadPool());
+        bus.register(new BusInsideEventTest(bus));
+        bus.register(new EventTest());
+        bus.post(new BusInsideEventTest.InitEvent());
+        System.out.println("Posted on thread: " + Thread.currentThread().getName());
+    }
 }
