@@ -2,7 +2,7 @@ package com.blink.eventbus;
 
 import java.util.concurrent.Executor;
 
-public abstract class Executors {
+abstract class Executors {
 
     static Executor directExecutor() {
         return DirectExecutor.INSTANCE;

@@ -8,7 +8,7 @@ public class Subscriber {
     private final Object target;
     private final Method method;
 
-    public Subscriber(EventBus bus, Object target, Method method) {
+    Subscriber(EventBus bus, Object target, Method method) {
         this.bus = bus;
         this.target = target;
         this.method = method;
@@ -25,13 +25,11 @@ public class Subscriber {
     }
 
     final void dispatchEvent(final Object event) {
-        bus.getExecutor().execute(new Runnable() {
-            public void run() {
-                try {
-                    invokeSubscriberMethod(event);
-                } catch (InvocationTargetException e) {
-                    bus.handleSubscriberException(e, context(event));
-                }
+        bus.getExecutor().execute(() -> {
+            try {
+                invokeSubscriberMethod(event);
+            } catch (InvocationTargetException e) {
+                bus.handleSubscriberException(e, context(event));
             }
         });
     }
@@ -77,7 +75,7 @@ public class Subscriber {
 
     static final class ThreadSafeSubscriber extends Subscriber {
 
-        public ThreadSafeSubscriber(EventBus bus, Object target, Method method) {
+        ThreadSafeSubscriber(EventBus bus, Object target, Method method) {
             super(bus, target, method);
         }
 

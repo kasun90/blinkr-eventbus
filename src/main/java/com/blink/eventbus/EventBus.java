@@ -1,6 +1,7 @@
 package com.blink.eventbus;
 
 import java.lang.reflect.Method;
+import java.util.Iterator;
 import java.util.concurrent.Executor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,15 +16,15 @@ public class EventBus {
     private final SubscriberRegistry registry = new SubscriberRegistry(this);
 
     public EventBus() {
-        this("default", Executors.directExecutor(), ExceptionLogger.INSTANCE, null);
+        this("default", Executors.directExecutor(), ExceptionLogger.INSTANCE, Dispatcher.perThreadDispatcher());
     }
 
     public EventBus(String identifier) {
-        this(identifier, Executors.directExecutor(), ExceptionLogger.INSTANCE, null);
+        this(identifier, Executors.directExecutor(), ExceptionLogger.INSTANCE, Dispatcher.perThreadDispatcher());
     }
 
     public EventBus(SubscriberExceptionHandler exceptionHandler) {
-        this("default", Executors.directExecutor(), exceptionHandler, null);
+        this("default", Executors.directExecutor(), exceptionHandler, Dispatcher.perThreadDispatcher());
     }
 
     EventBus(String identifier, Executor executor, SubscriberExceptionHandler exceptionHandler, Dispatcher dispatcher) {
@@ -37,8 +38,24 @@ public class EventBus {
         return identifier;
     }
 
-    public Executor getExecutor() {
+    Executor getExecutor() {
         return executor;
+    }
+
+    public void register(Object object) {
+        registry.register(object);
+    }
+
+    public void unregister(Object object) {
+        registry.unregister(object);
+    }
+
+    public void post(Object event) {
+        Iterator<Subscriber> allSubscribers = registry.getAllSubscribers(event);
+        if (allSubscribers.hasNext())
+            dispatcher.dispatch(event, allSubscribers);
+        else if (!(event instanceof DeadEvent))
+            post(new DeadEvent(this, event));
     }
 
     void handleSubscriberException(Throwable e, SubscriberExceptionContext context) {

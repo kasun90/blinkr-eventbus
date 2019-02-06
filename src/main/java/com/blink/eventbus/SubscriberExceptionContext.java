@@ -2,32 +2,32 @@ package com.blink.eventbus;
 
 import java.lang.reflect.Method;
 
-public class SubscriberExceptionContext {
+class SubscriberExceptionContext {
     private final EventBus eventBus;
     private final Object event;
     private final Object subscriber;
     private final Method subscriberMethod;
 
-    public SubscriberExceptionContext(EventBus eventBus, Object event, Object subscriber, Method subscriberMethod) {
+    SubscriberExceptionContext(EventBus eventBus, Object event, Object subscriber, Method subscriberMethod) {
         this.eventBus = eventBus;
         this.event = event;
         this.subscriber = subscriber;
         this.subscriberMethod = subscriberMethod;
     }
 
-    public EventBus getEventBus() {
+    EventBus getEventBus() {
         return eventBus;
     }
 
-    public Object getEvent() {
+    Object getEvent() {
         return event;
     }
 
-    public Object getSubscriber() {
+    Object getSubscriber() {
         return subscriber;
     }
 
-    public Method getSubscriberMethod() {
+    Method getSubscriberMethod() {
         return subscriberMethod;
     }
 }

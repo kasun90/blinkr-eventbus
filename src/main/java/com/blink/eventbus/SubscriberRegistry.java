@@ -6,11 +6,11 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-public class SubscriberRegistry {
+class SubscriberRegistry {
     private final EventBus bus;
     private final Map<Class<?>, CopyOnWriteArraySet<Subscriber>> subscribers = new ConcurrentHashMap<>();
 
-    public SubscriberRegistry(EventBus bus) {
+    SubscriberRegistry(EventBus bus) {
         this.bus = bus;
     }
 
@@ -48,7 +48,7 @@ public class SubscriberRegistry {
 
         while (currentClass != null) {
             for (Method method : currentClass.getDeclaredMethods()) {
-                if (method.isAnnotationPresent(Subscribe.class)) {
+                if (method.isAnnotationPresent(Subscribe.class) && !method.isSynthetic()) {
                     if (method.getParameterCount() != 1) {
                         throw new IllegalArgumentException(MessageFormat.format("Method {0} has @Subscribe annotation " +
                                         "but has {1} parameters. Subscriber methods must have exactly 1 parameter",
