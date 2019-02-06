@@ -1,6 +1,4 @@
-package com.blink.eventbus;
-
-import java.util.concurrent.Executors;
+package xyz.justblink.eventbus;
 
 public class EventBusTest2 {
     public static class InitiateProcessing { }

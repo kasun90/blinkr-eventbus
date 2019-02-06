@@ -1,4 +1,4 @@
-package com.blink.eventbus;
+package xyz.justblink.eventbus;
 
 public class BusInsideEventTest {
     private EventBus bus;

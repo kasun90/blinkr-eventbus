@@ -1,12 +1,10 @@
-package com.blink.eventbus;
+package xyz.justblink.eventbus;
 
 
 import java.util.ArrayDeque;
 import java.util.Iterator;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
-import static com.blink.eventbus.Conditions.checkNonNull;
 
 abstract class Dispatcher {
 
@@ -31,8 +29,8 @@ abstract class Dispatcher {
 
         @Override
         void dispatch(Object event, Iterator<Subscriber> subscribers) {
-            checkNonNull(event);
-            checkNonNull(subscribers);
+            Conditions.checkNonNull(event);
+            Conditions.checkNonNull(subscribers);
             Queue<Event> queueForThread = queue.get();
             queueForThread.offer(new Event(event, subscribers));
 
@@ -69,7 +67,7 @@ abstract class Dispatcher {
 
         @Override
         void dispatch(Object event, Iterator<Subscriber> subscribers) {
-            checkNonNull(event);
+            Conditions.checkNonNull(event);
             while (subscribers.hasNext()) {
                 queue.add(new EventWithSubscriber(event, subscribers.next()));
             }

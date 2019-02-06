@@ -1,4 +1,4 @@
-package com.blink.eventbus;
+package xyz.justblink.eventbus;
 
 class Conditions {
     static <T> T checkNonNull(T reference) {

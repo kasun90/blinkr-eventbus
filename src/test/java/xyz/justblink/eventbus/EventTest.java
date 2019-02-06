@@ -1,4 +1,4 @@
-package com.blink.eventbus;
+package xyz.justblink.eventbus;
 
 public class EventTest {
     static class TestEvent {}
