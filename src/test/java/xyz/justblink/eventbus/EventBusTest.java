@@ -1,16 +1,19 @@
 package xyz.justblink.eventbus;
 
 
-import org.junit.Before;
-import org.junit.Test;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.util.concurrent.Executors;
 
+@TestInstance(value = TestInstance.Lifecycle.PER_CLASS)
 public class EventBusTest {
 
     EventBus bus;
 
-    @Before
+    @BeforeAll
     public void init() {
         bus = new EventBus();
     }
