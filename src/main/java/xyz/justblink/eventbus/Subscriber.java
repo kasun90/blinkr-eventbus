@@ -3,7 +3,15 @@ package xyz.justblink.eventbus;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class Subscriber {
+/**
+ * Consists of the subscriber method of a specific object and way to execute it
+ *
+ * <p>Two subscribers are equivalent when they refer to the same method on the same object (not
+ * class). This property is used to ensure that no subscriber method is registered more than once.</p>
+ *
+ * @author Kasun Piyumal
+ */
+class Subscriber {
     private final EventBus bus;
     private final Object target;
     private final Method method;
@@ -15,15 +23,28 @@ public class Subscriber {
         method.setAccessible(true);
     }
 
+    /**
+     * @param bus The bus to which the event should be dispatched
+     * @param target Target subscriber object
+     * @param method Target subscriber method
+     * @return a {@code Subscriber} consisting {@code target} and {@code method}
+     */
     static Subscriber create(EventBus bus, Object target, Method method) {
         return shouldBeThreadSafe(method) ? new ThreadSafeSubscriber(bus, target, method)
                 : new Subscriber(bus, target, method);
     }
 
+    /**
+     * Check whether the method should be thread safe by checking the presence of {@link AcceptConcurrentEvents}
+     * annotation
+     */
     private static boolean shouldBeThreadSafe(Method method) {
         return method.getAnnotation(AcceptConcurrentEvents.class) != null;
     }
 
+    /**
+     * Dispatches the {@code event} to the subscriber using the executor provided initially
+     */
     final void dispatchEvent(final Object event) {
         bus.getExecutor().execute(() -> {
             try {
@@ -34,6 +55,10 @@ public class Subscriber {
         });
     }
 
+    /**
+     * Invokes the subscriber method. This method can be overridden to make the invocation
+     * synchronized.
+     */
     void invokeSubscriberMethod(Object event) throws InvocationTargetException {
         if (event == null)
             throw new NullPointerException();
@@ -73,6 +98,10 @@ public class Subscriber {
         return false;
     }
 
+    /**
+     * Subscriber that synchronizes invocations of a method to ensure that only one thread may enter
+     * the method at a time.
+     */
     static final class ThreadSafeSubscriber extends Subscriber {
 
         ThreadSafeSubscriber(EventBus bus, Object target, Method method) {

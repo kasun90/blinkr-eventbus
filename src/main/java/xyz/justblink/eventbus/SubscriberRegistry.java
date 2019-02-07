@@ -6,14 +6,34 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+/**
+ * Manages subscribers of the particular {@link EventBus}
+ *
+ * @author Kasun Piyumal
+ */
 class SubscriberRegistry {
+    /** The event bus this registry belongs to. */
     private final EventBus bus;
+
+    /**
+     * All registered subscribers, indexed by event type.
+     *
+     * <p>The {@link CopyOnWriteArraySet} values make it easy and relatively lightweight to get an
+     * immutable snapshot of all current subscribers to an event without any locking.
+     * This doc stub copied from Google's
+     * <a href="https://github.com/google/guava/wiki/EventBusExplained">Guava EventBus</a>.
+     */
     private final Map<Class<?>, CopyOnWriteArraySet<Subscriber>> subscribers = new ConcurrentHashMap<>();
 
     SubscriberRegistry(EventBus bus) {
         this.bus = bus;
     }
 
+    /**
+     * Register all subscriber methods of the {@code listener} object
+     *
+     * @param listener Object with subscriber methods
+     */
     void register(Object listener) {
         Map<Class<?>, Collection<Subscriber>> listenerMethods = findAllSubscribers(listener);
 
@@ -27,6 +47,10 @@ class SubscriberRegistry {
         }
     }
 
+    /**
+     * Unregister all subscriber methods of the {@code listener} object
+     * @param listener Object with subscriber methods
+     */
     void unregister(Object listener) {
         Map<Class<?>, Collection<Subscriber>> listenerMethods = findAllSubscribers(listener);
 
@@ -42,6 +66,12 @@ class SubscriberRegistry {
         }
     }
 
+    /**
+     * Find all subscriber methods of the particular listener (Including superclasses)
+     *
+     * @param listener Object with subscriber methods
+     * @return all the subscriber methods wrapped in {@link Subscriber} and mapped to event type
+     */
     private Map<Class<?>, Collection<Subscriber>> findAllSubscribers(Object listener) {
         Map<Class<?>, Collection<Subscriber>> subscriberMap = new HashMap<>();
         Class<?> currentClass = listener.getClass();
@@ -67,6 +97,10 @@ class SubscriberRegistry {
         return subscriberMap;
     }
 
+    /**
+     * @param event Event which are going to be dispatched
+     * @return all subscriber methods for the {@code event}
+     */
     Iterator<Subscriber> getAllSubscribers(Object event) {
         CopyOnWriteArraySet<Subscriber> eventSubscribers = this.subscribers.get(event.getClass());
         if (eventSubscribers != null) {
