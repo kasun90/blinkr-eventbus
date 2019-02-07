@@ -29,7 +29,7 @@ import java.util.logging.Logger;
  *
  * <h2>Posting events</h2>
  *
- * <p>Pass the desired event to EventBus instance's {@link #post(Object)} method./p>
+ * <p>Pass the desired event to EventBus instance's {@link #post(Object)} method.</p>
  *
  * <p>Currently this will only dispatch the event to the subscribers with exact class match. (Not for subscribers of
  * superclasses and interfaces which that class implements)</p>

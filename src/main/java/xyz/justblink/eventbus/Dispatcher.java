@@ -14,7 +14,7 @@ import static xyz.justblink.eventbus.Conditions.checkNonNull;
  *
  * @author Kasun Piyumal
  */
-abstract class Dispatcher {
+public abstract class Dispatcher {
 
     /**
      * Returns a dispatcher that queues events that are posted reentrantly on a thread that is already
